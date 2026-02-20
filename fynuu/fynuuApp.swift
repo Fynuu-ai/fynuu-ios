@@ -9,12 +9,15 @@ import SwiftUI
 
 @main
 struct fynuuApp: App {
+    @StateObject private var appState = AppState()
     let persistenceController = PersistenceController.shared
-
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(appState)
+                .preferredColorScheme(.light)
         }
     }
 }
