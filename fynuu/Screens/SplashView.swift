@@ -109,7 +109,7 @@ struct SplashView: View {
     private func route() {
         Task {
             try? await Task.sleep(nanoseconds: 1_800_000_000)
-            appState.route = appState.hasCompletedOnboarding ? .homeChat : .setup
+            appState.route = appState.hasCompletedOnboarding ? .homeChat : .setup(.googleSignIn)
         }
     }
 }

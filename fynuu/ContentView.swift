@@ -18,15 +18,22 @@ struct ContentView: View {
             case .splash:
                 SplashView()
                     .transition(.opacity)
-            case .setup:
-                // Replace with OnboardingCoordinatorView in Sprint 2
-                Text("Setup Coming Soon")
-                    .foregroundColor(.white)
-                    .transition(.move(edge: .trailing).combined(with: .opacity))
+
+            case .setup(let step):
+                switch step {
+                case .googleSignIn:
+                    GoogleSignInView()
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
+                case .groqAPIKey:
+                    GroqAPIKeyView()
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
+                case .modelDownload:
+                    ModelDownloadView()
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
+                }
+
             case .homeChat:
-                // Replace with HomeView in Chat sprint
-                Text("Chat Home Coming Soon")
-                    .foregroundColor(.white)
+                ChatView()
                     .transition(.move(edge: .trailing).combined(with: .opacity))
             }
         }

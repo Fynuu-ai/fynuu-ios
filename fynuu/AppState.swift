@@ -6,10 +6,16 @@
 
 import SwiftUI
 
-enum AppRoute {
+enum AppRoute: Equatable {
     case splash
-    case setup
+    case setup(SetupStep)
     case homeChat
+}
+
+enum SetupStep: Equatable {
+    case googleSignIn
+    case groqAPIKey
+    case modelDownload
 }
 
 @MainActor
