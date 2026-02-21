@@ -12,10 +12,18 @@ struct ModelDownloadView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("Model Download Setup")
+            
+            let apiKey = KeychainHelper.read(key: "groq_api_key")
+            Text("Model Download Screen")
                 .font(.title)
                 .bold()
                 .foregroundColor(.white)
+            
+            Text("Your groq api key is:"+(apiKey ?? "No api key found"))
+                .font(.caption)
+                .foregroundColor(.white)
+                .bold()
+            
             
             Button("Next") {
                 appState.hasCompletedOnboarding = true
@@ -23,5 +31,19 @@ struct ModelDownloadView: View {
             }
             .buttonStyle(.borderedProminent)
         }
+    }
+    
+    private func readFromKeychain(key: String) -> String? {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: Bundle.main.bundleIdentifier ?? "com.fynuu",
+            kSecAttrAccount as String: key,
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne
+        ]
+        var result: AnyObject?
+        SecItemCopyMatching(query as CFDictionary, &result)
+        guard let data = result as? Data else { return nil }
+        return String(data: data, encoding: .utf8)
     }
 }
