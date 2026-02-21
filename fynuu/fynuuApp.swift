@@ -6,11 +6,18 @@
 //
 
 import SwiftUI
+import FirebaseCore
+import GoogleSignIn
 
 @main
 struct fynuuApp: App {
     @StateObject private var appState = AppState()
     let persistenceController = PersistenceController.shared
+    
+    init()
+    {
+        FirebaseApp.configure()
+    }
     
     var body: some Scene {
         WindowGroup {
@@ -18,6 +25,9 @@ struct fynuuApp: App {
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(appState)
                 .preferredColorScheme(.light)
+                .onOpenURL { url in
+                        GIDSignIn.sharedInstance.handle(url)
+                }
         }
     }
 }
