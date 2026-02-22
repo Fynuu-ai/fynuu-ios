@@ -13,6 +13,7 @@
 		01C5548E2F49CB0100DDA7A7 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 01C5548D2F49CB0100DDA7A7 /* FirebaseAuth */; };
 		01C554902F49CB0100DDA7A7 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 01C5548F2F49CB0100DDA7A7 /* FirebaseCore */; };
 		01C554B62F4A358F00DDA7A7 /* fynuu.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 01C554B42F4A358F00DDA7A7 /* fynuu.xcdatamodeld */; };
+		01C555242F4B438A00DDA7A7 /* LLM in Frameworks */ = {isa = PBXBuildFile; productRef = 01C555232F4B438A00DDA7A7 /* LLM */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +80,7 @@
 				01C554872F49C5E100DDA7A7 /* GoogleSignIn in Frameworks */,
 				01C5548E2F49CB0100DDA7A7 /* FirebaseAuth in Frameworks */,
 				01C554902F49CB0100DDA7A7 /* FirebaseCore in Frameworks */,
+				01C555242F4B438A00DDA7A7 /* LLM in Frameworks */,
 				01C554892F49C5E100DDA7A7 /* GoogleSignInSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -146,6 +148,7 @@
 				01C554882F49C5E100DDA7A7 /* GoogleSignInSwift */,
 				01C5548D2F49CB0100DDA7A7 /* FirebaseAuth */,
 				01C5548F2F49CB0100DDA7A7 /* FirebaseCore */,
+				01C555232F4B438A00DDA7A7 /* LLM */,
 			);
 			productName = fynuu;
 			productReference = 01E976862F48CE1D00658B38 /* fynuu.app */;
@@ -232,6 +235,7 @@
 			packageReferences = (
 				01C554852F49C5E100DDA7A7 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				01C5548C2F49CB0100DDA7A7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				01C555222F4B438A00DDA7A7 /* XCRemoteSwiftPackageReference "LLM" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 01E976872F48CE1D00658B38 /* Products */;
@@ -616,6 +620,14 @@
 				minimumVersion = 12.9.0;
 			};
 		};
+		01C555222F4B438A00DDA7A7 /* XCRemoteSwiftPackageReference "LLM" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/eastriverlee/LLM.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -638,6 +650,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 01C5548C2F49CB0100DDA7A7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
+		};
+		01C555232F4B438A00DDA7A7 /* LLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 01C555222F4B438A00DDA7A7 /* XCRemoteSwiftPackageReference "LLM" */;
+			productName = LLM;
 		};
 /* End XCSwiftPackageProductDependency section */
 
