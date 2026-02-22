@@ -14,6 +14,8 @@ struct ChatView: View {
 
     var onOpenChatList: () -> Void
     var onOpenSettings: () -> Void
+    
+    @ObservedObject private var llm = LocalLLMService.shared
 
     init(session: ChatSession, onOpenChatList: @escaping () -> Void, onOpenSettings: @escaping () -> Void) {
         _vm = StateObject(wrappedValue: ChatViewModel(session: session))
@@ -30,6 +32,9 @@ struct ChatView: View {
             inputBar
         }
         .background(Color.black)
+        .task {
+            await LocalLLMService.shared.loadModel()
+        }
     }
 
     // MARK: - Top Bar
@@ -97,7 +102,12 @@ struct ChatView: View {
                         MessageBubble(message: message)
                             .id(message.id)
                     }
-                    if vm.isGenerating {
+                    // Live streaming bubble
+                    if vm.isGenerating && !vm.streamingText.isEmpty {
+                        StreamingBubble(text: vm.streamingText)
+                            .id("streaming")
+                    }
+                    if vm.isGenerating && vm.streamingText.isEmpty {
                         TypingIndicator()
                             .id("typing")
                     }
@@ -105,14 +115,8 @@ struct ChatView: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
             }
-            .onChange(of: vm.messages.count) { _ in
-                withAnimation {
-                    if vm.isGenerating {
-                        proxy.scrollTo("typing", anchor: .bottom)
-                    } else {
-                        proxy.scrollTo(vm.messages.last?.id, anchor: .bottom)
-                    }
-                }
+            .onChange(of: vm.streamingText) { _ in
+                withAnimation { proxy.scrollTo("streaming", anchor: .bottom) }
             }
             .onChange(of: vm.isGenerating) { _ in
                 withAnimation { proxy.scrollTo("typing", anchor: .bottom) }
@@ -122,34 +126,64 @@ struct ChatView: View {
 
     // MARK: - Input Bar
     private var inputBar: some View {
-        HStack(spacing: 12) {
-            TextField("Message...", text: $vm.inputText, axis: .vertical)
-                .lineLimit(1...5)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 10)
-                .background(Color(white: 0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                .foregroundColor(.white)
-                .font(.system(size: 15))
-
-            Button {
-                vm.sendMessage()
-            } label: {
-                Image(systemName: "arrow.up.circle.fill")
-                    .font(.system(size: 32))
-                    .foregroundStyle(
-                        vm.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || vm.isGenerating
-                        ? LinearGradient(colors: [Color(white: 0.25), Color(white: 0.25)],
-                                         startPoint: .top, endPoint: .bottom)
-                        : LinearGradient(colors: [.green, .blue],
-                                         startPoint: .topLeading, endPoint: .bottomTrailing)
-                    )
+        VStack(spacing: 0) {
+            // Model loading state
+            if llm.isLoading {
+                HStack(spacing: 8) {
+                    ProgressView().tint(.green).scaleEffect(0.8)
+                    Text("Loading on-device model...")
+                        .font(.caption)
+                        .foregroundColor(Color(white: 0.5))
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
+                .background(Color(white: 0.07))
             }
-            .disabled(vm.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || vm.isGenerating)
+
+            if let err = llm.loadError {
+                Text("⚠️ \(err)")
+                    .font(.caption)
+                    .foregroundColor(.red)
+                    .padding(.vertical, 6)
+                    .padding(.horizontal, 16)
+            }
+
+            HStack(spacing: 12) {
+                TextField("Message...", text: $vm.inputText, axis: .vertical)
+                    .lineLimit(1...5)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .background(Color(white: 0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    .foregroundColor(.white)
+                    .font(.system(size: 15))
+                    .disabled(!llm.isLoaded)
+
+                Button {
+                    Task { await vm.sendMessage() }
+                } label: {
+                    Image(systemName: "arrow.up.circle.fill")
+                        .font(.system(size: 32))
+                        .foregroundStyle(
+                            canSend
+                            ? LinearGradient(colors: [.green, .blue],
+                                             startPoint: .topLeading, endPoint: .bottomTrailing)
+                            : LinearGradient(colors: [Color(white: 0.25), Color(white: 0.25)],
+                                             startPoint: .top, endPoint: .bottom)
+                        )
+                }
+                .disabled(!canSend)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .background(Color.black)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
-        .background(Color.black)
+    }
+
+    private var canSend: Bool {
+        llm.isLoaded &&
+        !vm.isGenerating &&
+        !vm.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }
 
