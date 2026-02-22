@@ -13,6 +13,9 @@ final class ChatViewModel: ObservableObject {
     @Published var inputText = ""
     @Published var isGenerating = false
     @Published var streamingText = ""
+    
+    @Published var showCloudError = false
+    @Published var cloudErrorMessage = ""
 
     var session: ChatSession
     private let context = PersistenceController.shared.context
@@ -57,7 +60,7 @@ final class ChatViewModel: ObservableObject {
         case .basic:
             await generateOnDevice()
         case .complex:
-            await generateCloudDemo()
+            await generateCloud()
         }
     }
 
@@ -79,18 +82,62 @@ final class ChatViewModel: ObservableObject {
             }
         )
     }
+    // MARK: - Cloud (Groq)
 
-    // MARK: - Cloud (demo for now)
+    private func generateCloud() async {
+        let systemPrompt = UserDefaults.standard.string(forKey: "global_system_prompt")
+            ?? "You are a helpful AI assistant."
 
-    private func generateCloudDemo() async {
-        // Simulate network delay
-        try? await Task.sleep(nanoseconds: 1_200_000_000)
-        addMessage(
-            role: "assistant",
-            content: "☁️ This is a complex prompt — Groq Cloud LLM will handle this in the next sprint.",
-            route: "cloud"
+        // Build messages with full history for context
+        let groqMessages = CloudLLMService.buildMessages(
+            history: messages,
+            systemPrompt: systemPrompt
         )
-        isGenerating = false
+
+        var cloudFailed = false
+        var cloudError = ""
+
+        await CloudLLMService.shared.generate(
+            messages: groqMessages,
+            onToken: { [weak self] token in
+                guard let self else { return }
+                self.streamingText += token
+            },
+            onComplete: { [weak self] fullOutput in
+                guard let self else { return }
+                self.addMessage(role: "assistant", content: fullOutput, route: "cloud")
+                self.streamingText = ""
+                self.isGenerating = false
+            },
+            onError: { error in
+                cloudFailed = true
+                cloudError = error
+            }
+        )
+
+        // Fallback to on-device if cloud failed
+        if cloudFailed {
+            await handleCloudFallback(reason: cloudError)
+        }
+    }
+
+    private func handleCloudFallback(reason: String) async {
+        // Show error banner briefly
+        await MainActor.run {
+            self.cloudErrorMessage = reason
+            self.showCloudError = true
+        }
+
+        // Small delay so user sees the error
+        try? await Task.sleep(nanoseconds: 2_000_000_000)
+
+        await MainActor.run {
+            self.showCloudError = false
+            self.streamingText = ""
+        }
+
+        // Fallback to on-device
+        await generateOnDevice()
     }
 
     // MARK: - Core Data

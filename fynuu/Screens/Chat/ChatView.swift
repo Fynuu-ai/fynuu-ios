@@ -26,6 +26,34 @@ struct ChatView: View {
     var body: some View {
         VStack(spacing: 0) {
             topBar
+            // Cloud error + fallback banner
+            if vm.showCloudError {
+                HStack(spacing: 8) {
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.caption)
+                        .foregroundColor(.orange)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(vm.cloudErrorMessage)
+                            .font(.caption)
+                            .foregroundColor(.white)
+                        Text("Falling back to on-device model...")
+                            .font(.caption2)
+                            .foregroundColor(Color(white: 0.5))
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(Color.orange.opacity(0.15))
+                .overlay(
+                    Rectangle()
+                        .frame(height: 1)
+                        .foregroundColor(Color.orange.opacity(0.3)),
+                    alignment: .bottom
+                )
+                .transition(.move(edge: .top).combined(with: .opacity))
+                .animation(.easeInOut(duration: 0.3), value: vm.showCloudError)
+            }
             Divider().background(Color(white: 0.15))
             messageList
             Divider().background(Color(white: 0.15))
@@ -92,6 +120,8 @@ struct ChatView: View {
         .padding(.vertical, 12)
         .background(Color.black)
     }
+    
+    
 
     // MARK: - Message List
     private var messageList: some View {
