@@ -33,7 +33,7 @@ struct ContentView: View {
                 }
 
             case .homeChat:
-                ChatView()
+                HomeView()
                     .transition(.move(edge: .trailing).combined(with: .opacity))
             }
         }
@@ -41,8 +41,11 @@ struct ContentView: View {
     }
 }
 
-#Preview {
-    ContentView()
-        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-        .environmentObject(AppState())
-}
+/*
+ #Preview {
+ ContentView()
+ .environment(\.managedObjectContext, //PersistenceController.preview.container.viewContext
+ )
+ .environmentObject(AppState())
+ }
+ */

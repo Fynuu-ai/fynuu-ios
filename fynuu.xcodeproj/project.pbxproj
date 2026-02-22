@@ -12,6 +12,7 @@
 		01C5548B2F49C9CD00DDA7A7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 01C5548A2F49C9CD00DDA7A7 /* GoogleService-Info.plist */; };
 		01C5548E2F49CB0100DDA7A7 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 01C5548D2F49CB0100DDA7A7 /* FirebaseAuth */; };
 		01C554902F49CB0100DDA7A7 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 01C5548F2F49CB0100DDA7A7 /* FirebaseCore */; };
+		01C554B62F4A358F00DDA7A7 /* fynuu.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 01C554B42F4A358F00DDA7A7 /* fynuu.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +34,7 @@
 
 /* Begin PBXFileReference section */
 		01C5548A2F49C9CD00DDA7A7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		01C554B52F4A358F00DDA7A7 /* fynuu.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = fynuu.xcdatamodel; sourceTree = "<group>"; };
 		01E976862F48CE1D00658B38 /* fynuu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fynuu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01E976982F48CE1F00658B38 /* fynuuTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = fynuuTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		01E976A22F48CE1F00658B38 /* fynuuUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = fynuuUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -101,6 +103,7 @@
 		01E9767D2F48CE1D00658B38 = {
 			isa = PBXGroup;
 			children = (
+				01C554B42F4A358F00DDA7A7 /* fynuu.xcdatamodeld */,
 				01E976882F48CE1D00658B38 /* fynuu */,
 				01E9769B2F48CE1F00658B38 /* fynuuTests */,
 				01E976A52F48CE1F00658B38 /* fynuuUITests */,
@@ -272,6 +275,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01C554B62F4A358F00DDA7A7 /* fynuu.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -636,6 +640,19 @@
 			productName = FirebaseCore;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		01C554B42F4A358F00DDA7A7 /* fynuu.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				01C554B52F4A358F00DDA7A7 /* fynuu.xcdatamodel */,
+			);
+			currentVersion = 01C554B52F4A358F00DDA7A7 /* fynuu.xcdatamodel */;
+			path = fynuu.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 01E9767E2F48CE1D00658B38 /* Project object */;
 }
